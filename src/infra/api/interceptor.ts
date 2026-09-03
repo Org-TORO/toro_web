@@ -52,7 +52,7 @@ export const setupInterceptors = (): void => {
         | undefined;
 
       if (!originalRequest) {
-        return Promise.reject(error);
+        return Promise.reject(error); // Pass error to api caller
       }
 
       const isAccessTokenExpired =
@@ -60,14 +60,14 @@ export const setupInterceptors = (): void => {
         error.response?.data?.code === "ACCESS_TOKEN_EXPIRED";
 
       if (!isAccessTokenExpired) {
-        return Promise.reject(error);
+        return Promise.reject(error); // Pass error to api caller
       }
 
       /**
        * Prevent infinite retry loops.
        */
       if (originalRequest._retry) {
-        return Promise.reject(error);
+        return Promise.reject(error); // Pass error to api caller
       }
 
       originalRequest._retry = true;
@@ -86,7 +86,7 @@ export const setupInterceptors = (): void => {
             )
             .then((response) => {
               const newAccessToken =
-                response.data.data.accessToken;
+                response.data.accessToken;
 
               setAccessToken(newAccessToken);
 
@@ -103,8 +103,7 @@ export const setupInterceptors = (): void => {
          * All failed requests wait for
          * the same refresh request.
          */
-        const newAccessToken =
-          await refreshPromise;
+        const newAccessToken = await refreshPromise;
 
         /**
          * Retry the original request
