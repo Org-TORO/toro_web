@@ -6,6 +6,9 @@ function HomePage() {
 
     const isAuthenticated = getAccessToken() !== null ? true : false;
 
+    console.log(getAccessToken());
+    
+
     return (
         <div>
             Home Page

@@ -13,8 +13,8 @@ import {
   getRefreshPromise,
   setRefreshPromise,
 } from "../security/refresh.helper";
-import type FailureResponse from "./failure.response.";
 import type RefreshTokenResponse from "../security/refresh-token.response";
+import { ERROR_CODES, type FailureResponse } from "./failure.response.";
 
 
 interface RetryRequestConfig
@@ -57,11 +57,13 @@ export const setupInterceptors = (): void => {
 
       const isAccessTokenExpired =
         error.response?.status === 401 &&
-        error.response?.data?.code === "ACCESS_TOKEN_EXPIRED";
+        error.response?.data?.code === ERROR_CODES.UNAUTHENTICATED_ERROR;      
 
       if (!isAccessTokenExpired) {
         return Promise.reject(error); // Pass error to api caller
       }
+
+      console.log("REFRESHING TOKEN!!!");
 
       /**
        * Prevent infinite retry loops.

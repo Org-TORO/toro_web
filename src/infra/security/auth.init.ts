@@ -11,7 +11,7 @@ export const initializeAuth = async (): Promise<void> => {
   try {
     const response =
       await refreshApi.post<SuccessResponse<RefreshTokenResponse>>(
-        "/auth/refresh-token"
+        "/auth/bootstrap-token"
       );
 
     setAccessToken(response.data.data.accessToken);
