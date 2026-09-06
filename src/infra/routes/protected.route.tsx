@@ -1,12 +1,12 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { getAccessToken } from "../security/jwt.helper";
+import { useAuthStore } from "../security/auth.store";
 
 
 export function ProtectedRoute() {
     const location = useLocation();
 
 
-    const isAuthenticated = getAccessToken() !== null ? true : false;
+    const { isAuthenticated } = useAuthStore();
 
 
     if (!isAuthenticated) {

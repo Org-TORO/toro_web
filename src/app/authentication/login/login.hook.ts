@@ -5,6 +5,7 @@ import axios from "axios";
 import type { LoginFailure, LoginInput, LoginResponse } from "./login.schema";
 import type SuccessResponse from "../../../infra/api/success.response.";
 import { ERROR_CODES } from "../../../infra/api/failure.response.";
+import { useAuthStore } from "../../../infra/security/auth.store";
 
 
 export function useLogin() {
@@ -20,6 +21,10 @@ export function useLogin() {
         }
     });
 
+    const setAccessToken = useAuthStore((state) => state.setAccessToken);
+    const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
+
+
     async function submitLoginForm(data: LoginInput) {
         try {
             const response = await api.post<SuccessResponse<LoginResponse>>(
@@ -27,9 +32,9 @@ export function useLogin() {
                 data
             );
 
-            console.log(response.data);
+            setAccessToken(response.data.data.accessToken);
+            setIsAuthenticated(true);
 
-            return response.data;
         } catch (error) {
             if (!axios.isAxiosError<LoginFailure>(error)) {
                 return;

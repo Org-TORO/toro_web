@@ -4,11 +4,7 @@ import {
 } from "axios";
 
 import { api, refreshApi } from "./api";
-import {
-  clearAccessToken,
-  getAccessToken,
-  setAccessToken,
-} from "../security/jwt.helper";
+import { useAuthStore } from "../security/auth.store";
 import {
   getRefreshPromise,
   setRefreshPromise,
@@ -28,7 +24,7 @@ export const setupInterceptors = (): void => {
    */
   api.interceptors.request.use(
     (config) => {
-      const accessToken = getAccessToken();
+      const accessToken = useAuthStore.getState().accessToken;
 
       if (accessToken) {
         config.headers.Authorization =
@@ -87,10 +83,11 @@ export const setupInterceptors = (): void => {
               "/auth/refresh-token"
             )
             .then((response) => {
-              const newAccessToken =
-                response.data.accessToken;
-
+              const newAccessToken = response.data.accessToken;
+              const { setAccessToken, setIsAuthenticated } = useAuthStore.getState();
+              
               setAccessToken(newAccessToken);
+              setIsAuthenticated(true);
 
               return newAccessToken;
             })
@@ -116,7 +113,10 @@ export const setupInterceptors = (): void => {
 
         return api(originalRequest);
       } catch (refreshError) {
-        clearAccessToken();
+
+        const { clearAuthState } = useAuthStore.getState();
+
+        clearAuthState();
 
         // Optional:
         // window.location.href = "/login";
