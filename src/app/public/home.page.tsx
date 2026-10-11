@@ -22,6 +22,10 @@ function HomePage() {
             <Link to="/login">Go to login page</Link>
 
             <br />
+
+            <Link to="/demo">Go to mobile demo</Link>
+
+            <br />
             
             <Link to="/private">Go to private page</Link>
 

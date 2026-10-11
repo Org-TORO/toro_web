@@ -11,7 +11,7 @@ type AuthState = {
 }
 
 
-export const useAuthStore = create<AuthState>((set, get, store) => ({
+export const useAuthStore = create<AuthState>((set, _get, store) => ({
   accessToken: null,
   isAuthenticated: false,
 
